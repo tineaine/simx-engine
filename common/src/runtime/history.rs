@@ -1,7 +1,7 @@
-use crate::entity::common::HistoryLog;
 use crate::logger::interface::info;
 use crate::runtime::config::get_simx_config;
 use crate::tools::common::get_timestamp;
+use engine_share::entity::common::HistoryLog;
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::fs;

@@ -1,10 +1,10 @@
 use crate::core::flow::exec::flow::exec_steps;
 use crate::core::flow::interface::exec_flow;
 use crate::core::script::interface::exec_script;
-use engine_common::entity::common::SimxThreadSenderStringData;
-use engine_common::entity::flow::flow::SubFlowTransferData;
 use engine_common::logger::interface::warn;
 use engine_common::runtime::thread::set_engine_sender;
+use engine_share::entity::common::SimxThreadSenderStringData;
+use engine_share::entity::flow::flow::SubFlowTransferData;
 use std::sync::mpsc;
 use std::thread;
 use tokio::runtime::Builder;
@@ -32,7 +32,7 @@ pub fn init_thread_monitor() {
                     // 匹配线程消息对象
                     match msg.function.as_str() {
                         "exec_flow" => {
-                            exec_flow(msg.data.as_ref()).await;
+                            exec_flow(msg.data.as_ref()).await.expect("exec flow done with err");
                         }
                         "exec_script" => {
                             exec_script(msg.data.as_ref());

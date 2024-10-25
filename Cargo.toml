@@ -8,6 +8,8 @@ members = [
     "handler",
     # 引擎主体
     "kernel",
+    # 线程通讯、结构体等，插件可以仅引用此模块
+    "share",
 ]
 
 [profile.release]

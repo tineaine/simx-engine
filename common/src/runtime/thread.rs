@@ -1,4 +1,4 @@
-use crate::entity::common::SimxThreadSenderStringData;
+use engine_share::entity::common::SimxThreadSenderStringData;
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::sync::{mpsc, Mutex};

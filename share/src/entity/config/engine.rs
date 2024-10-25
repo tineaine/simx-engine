@@ -1,5 +1,3 @@
-use crate::mui::interface::Language;
-use crate::mui::interface::Language::Chinese;
 use serde::Deserialize;
 // 配置文件的实体类
 
@@ -15,11 +13,6 @@ pub struct EngineConfig {
     // 最大线程数，默认为 100
     #[serde(default = "default_max_thread")]
     pub max_thread: u32,
-
-    // 语言
-    #[serde(default = "default_language")]
-    pub language: Language,
-
 
     // 运行模式
     #[serde(default = "default_engine_mode")]
@@ -95,7 +88,6 @@ impl Default for EngineConfig {
     fn default() -> Self {
         Self {
             max_thread: default_max_thread(),
-            language: default_language(),
             engine_mode: default_engine_mode(),
             run_init_script: default_run_init_script(),
             run_init_flow: default_run_init_flow(),
@@ -125,9 +117,7 @@ fn default_max_thread() -> u32 {
 fn default_engine_mode() -> String {
     "memory".to_string()
 }
-fn default_language() -> Language {
-    Chinese
-}
+
 fn default_run_init_script() -> bool {
     false
 }

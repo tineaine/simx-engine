@@ -2,12 +2,12 @@ use std::fs;
 use std::path::Path;
 use std::sync::Arc;
 
+use crate::core::flow::dispatch::interface::dispatch_flow;
+use engine_common::logger::interface::info;
+use engine_common::runtime::config::get_simx_config;
+use engine_share::entity::exception::dispatch::DispatchErr;
 use futures::future::BoxFuture;
 use futures::FutureExt;
-
-use crate::core::flow::controller::interface::exec_fl_flow;
-use engine_common::logger::interface::{info, warn};
-use engine_common::runtime::config::get_simx_config;
 
 // 加载并执行默认流
 pub async fn load_and_exec_default_flow() {
@@ -34,7 +34,7 @@ fn traverse_folder(folder_path: &Path) -> BoxFuture<'static, ()> {
                 if let Ok(entry) = entry {
                     let path = entry.path();
                     if path.is_file() {
-                        exec_flow(&path).await;
+                        exec_flow(&path).await.unwrap();
                     } else if path.is_dir() {
                         // If it's a directory, recursively traverse its contents
                         traverse_folder(&path).await;
@@ -46,22 +46,11 @@ fn traverse_folder(folder_path: &Path) -> BoxFuture<'static, ()> {
 }
 
 // 执行流
-pub async fn exec_flow(path: &Path) {
-    if let Some(extension) = path.extension() {
-        match extension.to_str().unwrap().to_lowercase().as_str() {
-            // 目前首选支持flow流程，其余都属于自定义的流类型
-            // 目前其实flow也是json类型，但是后续flow可能会有加密之类的功能加上去
-            // 系统不关系流的组织形式，只要能转化为标准流对象即可
-            "flow" => exec_fl_flow(path).await,
-            // 目前拒绝处理其他类型的流程
-            _ => {
-                warn("Unparsable process file format! Check your flow file format.");
-                return;
-            }
-        }
-    } else {
-        warn("Unparsable process file format! Check your flow file format.");
-        // 不解析其他任何后缀名的文件
-        // Ok(())
-    }
+pub async fn exec_flow(path: &Path) -> Result<(), DispatchErr> {
+    // 目前首选支持flow流程，其余都属于自定义的流类型
+    // 目前其实flow也是json类型，但是后续flow可能会有加密之类的功能加上去
+    // 系统不关系流的组织形式，只要能转化为标准流对象即可
+    // exec_bp_flow(path).await
+    // 调度执行
+    dispatch_flow(path).await
 }

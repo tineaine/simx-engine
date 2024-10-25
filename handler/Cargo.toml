@@ -6,6 +6,8 @@ edition = "2021"
 [dependencies]
 # 公共模块
 engine-common = { path = "../common" }
+# 公共资源
+engine-share = { path = "../share" }
 # 用于序列化和反序列化数据
 serde = { version = "1.0.207", features = ["derive"] }
 # serde 的派生宏

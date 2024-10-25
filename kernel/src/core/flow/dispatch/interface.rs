@@ -3,18 +3,18 @@ use crate::core::flow::dispatch::common::redress_stream_dispatch;
 use crate::core::flow::dispatch::dispatch_general::dispatch_general;
 use crate::core::flow::dispatch::dispatch_loop::dispatch_loop;
 use crate::core::flow::resolver::interface::flow_resolver;
-use engine_common::entity::common::HistoryLog;
-use engine_common::entity::exception::common::Status;
-use engine_common::entity::exception::dispatch::DispatchErr;
-use engine_common::entity::exception::node::NodeError;
-use engine_common::entity::flow::blueprint::Blueprint;
-use engine_common::entity::flow::flow::{Flow, FlowData, FlowRuntimeModel, SystemFlowData};
-use engine_common::entity::flow::node::{Node, NodeTag};
 use engine_common::exception::flow::flow_dispatch_err_handler;
-use engine_common::logger::interface::{fail, info, success};
+use engine_common::logger::interface::{debug, fail};
 use engine_common::runtime::flow::{get_flow_runtime, set_flow_runtime};
 use engine_common::runtime::history::{history_persistent, log_history};
 use engine_common::tools::common::{get_current_time, get_uuid};
+use engine_share::entity::common::HistoryLog;
+use engine_share::entity::exception::common::Status;
+use engine_share::entity::exception::dispatch::DispatchErr;
+use engine_share::entity::exception::node::NodeError;
+use engine_share::entity::flow::blueprint::Blueprint;
+use engine_share::entity::flow::flow::{Flow, FlowData, FlowRuntimeModel, SystemFlowData};
+use engine_share::entity::flow::node::{Node, NodeTag};
 use std::path::Path;
 
 // 流调度执行器
@@ -77,7 +77,7 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
         },
     });
 
-    info(format!("flow {} :[{}] will be exec.", flow.name, uuid).as_str());
+    debug(format!("flow {} :[{}] will be exec.", flow.name, uuid).as_str());
 
     let runtime = flow.clone().runtime.unwrap();
     // 取入口节点群并尝试执行
@@ -95,7 +95,7 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
             }
         }
     }
-    success(format!("flow {} :[{}] has be exec success.", flow.name, uuid.clone()).as_str());
+    debug(format!("flow {} :[{}] has be exec success.", flow.name, uuid.clone()).as_str());
     // 将历史日志进行持久化
     history_persistent(uuid);
     Ok(())

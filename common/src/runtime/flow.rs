@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use crate::entity::flow::flow::Flow;
-use crate::entity::common::SimxFlow;
+use engine_share::entity::common::SimxFlow;
+use engine_share::entity::flow::flow::Flow;
 use lazy_static::lazy_static;
 
 lazy_static! {

@@ -25,3 +25,7 @@
 /.idea/runConfigurations/package_mac_sh.xml
 /.idea/
 /example/simx-engine.exe
+handler/src/handler/files/.DS_Store
+.DS_Store
+example/engine
+example/ext/simx-http/simx-http.dylib

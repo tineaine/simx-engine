@@ -1,5 +1,5 @@
-use crate::entity::extension::Extension;
 use crate::logger::interface::fail;
+use engine_share::entity::extension::Extension;
 use libloader::libloading::{Library, Symbol};
 use std::path::Path;
 

@@ -1,0 +1,14 @@
+[package]
+name = "engine-share"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# 处理 JSON 数据
+serde_json = "1.0.124"
+# 解析和生成 TOML 格式配置文件
+toml = "0.8.19"
+# 序列化和反序列化数据
+serde = { version = "1.0.207", features = ["derive"] }
+# serde 的派生宏
+serde_derive = "1.0.207"

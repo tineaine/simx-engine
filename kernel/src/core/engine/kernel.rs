@@ -1,4 +1,5 @@
 use crate::core::engine::initialization::engine_init;
+use crate::core::engine::thread::init_thread_monitor;
 use crate::core::flow::interface::exec_flow;
 use engine_common::extension::interface::call_extension_init;
 use engine_common::logger::interface::{fail, info};
@@ -13,7 +14,10 @@ use std::path::Path;
 pub async fn serve() {
     // 获取simx基础配置
     let simx_config = get_simx_config();
-    
+
+    //  初始化核心线程池
+    init_thread_monitor();
+
     // 执行系统初始化事件
     // 包括运行初始化脚本和初始化流
     let init_ret = engine_init().await;
@@ -66,7 +70,7 @@ pub async fn run() {
     // 判断文件路径是否为空
     if args.len() <= 2 {
         file_path = args[1].as_str();
-    }else { 
+    } else {
         file_path = args[2].as_str();
     }
     // 分析是否为flow文件（目前直接判断后缀名
@@ -84,5 +88,8 @@ pub async fn run() {
     }
 
     // 调用流引擎执行该文件
-    exec_flow(path).await;
+    let ret = exec_flow(path).await;
+    if ret.is_err() {
+        fail(format!("Flow run done with err: {:?}", ret.err().unwrap()).as_str());
+    }
 }
