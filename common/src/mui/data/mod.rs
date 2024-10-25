@@ -1,2 +1,0 @@
-mod chinese;
-mod english;

@@ -1,5 +1,5 @@
-use crate::entity::exception::node::NodeError;
 use crate::logger::interface::fail;
+use engine_share::entity::exception::node::NodeError;
 
 // 节点异常统一处理
 // 如果返回了false，将断开流的执行

@@ -4,6 +4,8 @@ version = "0.1.1"
 edition = "2021"
 
 [dependencies]
+# 公共资源
+engine-share = { path = "../share" }
 # 处理颜色字符串
 color-string = "0.1.6"
 # 处理 JSON 数据

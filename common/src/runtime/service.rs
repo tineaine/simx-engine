@@ -1,4 +1,4 @@
-use crate::entity::services::Service;
+use engine_share::entity::services::Service;
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::sync::Mutex;

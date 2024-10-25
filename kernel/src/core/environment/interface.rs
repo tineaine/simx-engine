@@ -1,5 +1,5 @@
 use crate::core::environment::java::check_java_version;
-use engine_common::entity::flow::flow::Environment;
+use engine_share::entity::flow::flow::Environment;
 
 pub fn check(requirements: Vec<Environment>) -> Result<(), String> {
     for requirement in requirements {

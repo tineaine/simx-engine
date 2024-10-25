@@ -1,9 +1,6 @@
 use crate::core::engine::kernel::{run, serve};
-use crate::core::engine::thread::init_thread_monitor;
 use engine_common::logger::interface::info;
-use engine_common::mui::interface::load_language_package;
 use engine_common::runtime::config::get_simx_config;
-use engine_common::runtime::engine::set_engine_info;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -36,18 +33,8 @@ async fn main() {
 
 // 初始化方法
 fn init() {
-    // 加载多语言包
-    load_language_package();
-    // 每次更新系统都记得修改这里
-    let engine_version = "0.1.1";
-    // 系统支持API的版本
-    let support_api_version = "0.0.1";
-    set_engine_info("engine_version", engine_version);
-    set_engine_info("support_api_version", support_api_version);
     // 检查日志文件夹
-    let engine_conf = get_simx_config().engine;
-    //  初始化核心线程池
-    init_thread_monitor();
+    let engine_conf = get_simx_config().engine; 
     // 检查运行目录下是否有日志目录
     let log_path = Path::new(engine_conf.log_path.as_str()).is_dir();
     if !log_path {

@@ -1,10 +1,11 @@
 // 此runtime主要由插件使用
 use std::collections::HashMap;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
-use crate::entity::exception::node::NodeError;
-use crate::entity::extension::{Extension, ExtensionLibrary};
+use engine_share::entity::exception::node::NodeError;
+use engine_share::entity::extension::Extension;
 use lazy_static::lazy_static;
+use libloading::Library;
 
 lazy_static! {
     static ref RUNTIME_EXTENSION: Mutex<HashMap<String, Extension>> = Mutex::new(HashMap::new());
@@ -48,4 +49,21 @@ pub fn get_extension_library(key: &str) -> Result<ExtensionLibrary, NodeError> {
 pub fn remove_extension_library(key: &str) {
     let mut data = RUNTIME_LIBRARY.lock().unwrap();
     data.remove(key);
+}
+
+#[derive(Debug)]
+pub struct ExtensionLibrary {
+    pub win: Option<Arc<libloader::libloading::Library>>,
+    pub linux: Option<Arc<Library>>,
+    pub mac: Option<Arc<Library>>,
+}
+
+impl Clone for ExtensionLibrary {
+    fn clone(&self) -> Self {
+        ExtensionLibrary {
+            win: self.win.clone(),
+            linux: self.linux.clone(),
+            mac: self.mac.clone(),
+        }
+    }
 }

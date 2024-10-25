@@ -1,6 +1,6 @@
-use engine_common::entity::exception::node::NodeError;
-use engine_common::entity::flow::node::Node;
 use engine_common::thread::script::exec_script;
+use engine_share::entity::exception::node::NodeError;
+use engine_share::entity::flow::node::Node;
 
 pub fn handle_script(node: Node) -> Result<(), NodeError> {
     match node.attr.get("path") {
