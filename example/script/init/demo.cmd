@@ -1,1 +1,1 @@
-echo morning
+echo hello by cmd

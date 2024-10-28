@@ -53,6 +53,7 @@ pub fn remove_extension_library(key: &str) {
 
 #[derive(Debug)]
 pub struct ExtensionLibrary {
+    #[cfg(windows)]
     pub win: Option<Arc<libloader::libloading::Library>>,
     pub linux: Option<Arc<Library>>,
     pub mac: Option<Arc<Library>>,
@@ -61,6 +62,7 @@ pub struct ExtensionLibrary {
 impl Clone for ExtensionLibrary {
     fn clone(&self) -> Self {
         ExtensionLibrary {
+            #[cfg(windows)]
             win: self.win.clone(),
             linux: self.linux.clone(),
             mac: self.mac.clone(),

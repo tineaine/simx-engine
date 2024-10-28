@@ -1,4 +1,4 @@
-use crate::core::engine::initialization::engine_init;
+use crate::core::engine::init::engine_init;
 use crate::core::engine::thread::init_thread_monitor;
 use crate::core::flow::interface::exec_flow;
 use engine_common::extension::interface::call_extension_init;

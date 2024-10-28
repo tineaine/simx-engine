@@ -1,9 +1,8 @@
-use crate::logger::interface::fail;
-use engine_share::entity::extension::Extension;
+#[cfg(windows)]
 use libloader::libloading::{Library, Symbol};
-use std::path::Path;
 
 // 调用插件的初始化函数
+#[cfg(windows)]
 pub fn call_dll_extension_init(extension: Extension) -> Result<(), String> {
     // 取方法所在插件文件名（相对于插件根目录）
     let function_file = extension.path.as_ref().unwrap();

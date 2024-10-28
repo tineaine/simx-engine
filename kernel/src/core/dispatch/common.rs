@@ -1,4 +1,4 @@
-use crate::core::flow::dispatch::interface::dispatch_nodes;
+use crate::core::dispatch::interface::dispatch_nodes;
 use engine_common::exception::node::node_expect_dispose;
 use engine_common::expr::interface::expr_eval_bool;
 use engine_share::entity::exception::dispatch::DispatchErr;

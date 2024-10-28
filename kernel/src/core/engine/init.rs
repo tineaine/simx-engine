@@ -89,7 +89,7 @@ pub fn reload_local(mode: &str) -> Result<String, String> {
 
 
     // 返回成功消息
-    return Ok("Scan done.".to_string());
+    Ok("Scan done.".to_string())
 }
 
 pub fn reload_local_traverse_folder(folder_path: &Path, traverse_type: &str) {

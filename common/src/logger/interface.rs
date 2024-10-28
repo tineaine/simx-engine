@@ -8,9 +8,7 @@ pub fn warn(text: &str) {
     warn!(text);
 }
 
-pub fn fail(text: &str) {
-    error!(text);
-}
+pub fn fail(text: &str) { error!(text); }
 
 pub fn success(text: &str) {
     info!(text);
@@ -24,6 +22,4 @@ pub fn script_fail(text: &str) {
     info!(text);
 }
 
-pub fn debug(text: &str) {
-    debug!(text);
-}
+pub fn debug(text: &str) { debug!(text); }

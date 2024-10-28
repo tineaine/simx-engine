@@ -1,3 +1,3 @@
 pub mod kernel;
-pub mod initialization;
+pub mod init;
 pub mod thread;

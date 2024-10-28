@@ -11,15 +11,14 @@ use tokio::runtime::Builder;
 
 pub fn init_thread_monitor() {
     let rt = Builder::new_multi_thread()
-        // 设置最大工作线程数为 4
-        .worker_threads(4)
-        // 设置最大阻塞线程数为 8
-        .max_blocking_threads(8)
+        // 设置最大工作线程数为 8
+        .worker_threads(8)
+        // 设置最大阻塞线程数为 10
+        .max_blocking_threads(10)
         // 启用所有 Tokio 的功能（如定时器、IO 等）
         .enable_all()
         .build()
         .unwrap();
-
     // 创建通道用于线程之间的消息传递
     let (engine_sender, engine_receiver) = mpsc::channel::<SimxThreadSenderStringData>();
 

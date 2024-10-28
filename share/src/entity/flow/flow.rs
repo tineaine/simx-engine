@@ -36,6 +36,7 @@ pub struct FlowRuntimeModel {
     pub current_node: Option<Node>,
     // 流运行时数据
     pub data: FlowData,
+
 }
 
 //
@@ -136,6 +137,8 @@ pub struct SystemFlowData {
     pub route: HashMap<String, Vec<Value>>,
     // 日志数据
     pub logs: Vec<HistoryLog>,
+    pub start_time: String,
+    pub end_time: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
