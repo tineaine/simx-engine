@@ -14,9 +14,8 @@ members = [
 
 [profile.release]
 # panic后让os清理
-# 可以减少可执行文件的大小
 panic = "abort"
-
-# 调试模式
-[profile.dev]
-panic = "unwind"
+# 开启lto
+lto = true
+# 优化文件大小
+opt-level = "s"
