@@ -5,6 +5,7 @@ use std::sync::{Arc, Mutex};
 use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::extension::Extension;
 use lazy_static::lazy_static;
+#[cfg(unix)]
 use libloading::Library;
 
 lazy_static! {
@@ -55,7 +56,9 @@ pub fn remove_extension_library(key: &str) {
 pub struct ExtensionLibrary {
     #[cfg(windows)]
     pub win: Option<Arc<libloader::libloading::Library>>,
+    #[cfg(unix)]
     pub linux: Option<Arc<Library>>,
+    #[cfg(unix)]
     pub mac: Option<Arc<Library>>,
 }
 
@@ -64,7 +67,9 @@ impl Clone for ExtensionLibrary {
         ExtensionLibrary {
             #[cfg(windows)]
             win: self.win.clone(),
+            #[cfg(unix)]
             linux: self.linux.clone(),
+            #[cfg(unix)]
             mac: self.mac.clone(),
         }
     }

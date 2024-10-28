@@ -1,10 +1,12 @@
 use crate::extension::common::common::{common_call_method, get_extension_path};
 #[cfg(windows)]
 use crate::extension::dll::interface::call_dll_extension_init;
+#[cfg(unix)]
 use crate::extension::dylib::interface::call_dylib_extension_init;
 use crate::extension::jar::interface::call_jar_extension_init;
+#[cfg(unix)]
 use crate::extension::so::interface::call_so_extension_init;
-use crate::logger::interface::{info, warn};
+use crate::logger::interface::{fail, info, warn};
 use crate::runtime::extension::{remove_extension_info, remove_extension_library, set_extension_library, ExtensionLibrary};
 use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::extension::Extension;
@@ -31,10 +33,13 @@ pub fn load_extension(extension: Extension) {
             let lib = unsafe { Library::new(path.clone()) }.expect("Could not load dll");
             set_extension_library(path.to_str().unwrap(), ExtensionLibrary {
                 win: Some(Arc::new(lib)),
+                #[cfg(unix)]
                 linux: None,
+                #[cfg(unix)]
                 mac: None,
             });
         }
+        #[cfg(unix)]
         "macos" => {
             let path = Path::new(&function_file).join(extension.entry_lib + ".dylib");
             let lib = unsafe { Library::new(path.clone()) }.expect("Could not load dylib");
@@ -46,7 +51,8 @@ pub fn load_extension(extension: Extension) {
             });
         }
         // 默认直接当so加载
-        _ => {
+        #[cfg(unix)]
+        "linux" => {
             let path = Path::new(&function_file).join(extension.entry_lib + ".so");
             let lib = unsafe { Library::new(path.clone()) }.expect("Could not load so");
             set_extension_library(path.to_str().unwrap(), ExtensionLibrary {
@@ -55,6 +61,9 @@ pub fn load_extension(extension: Extension) {
                 linux: Some(Arc::new(lib)),
                 mac: None,
             });
+        }
+        _ => {
+            fail("Platform not support");
         }
     };
 }
@@ -110,9 +119,11 @@ pub fn call_extension_init(extension: Extension) -> Result<(), String> {
             "windows" => {
                 return call_dll_extension_init(extension);
             }
+            #[cfg(unix)]
             "linux" => {
                 return call_so_extension_init(extension);
             }
+            #[cfg(unix)]
             "macos" => {
                 return call_dylib_extension_init(extension)
             }
@@ -141,9 +152,11 @@ pub fn enable_extension_service(extension: Extension) -> Result<(), String> {
             "windows" => {
                 return call_dll_extension_init(extension);
             }
+            #[cfg(unix)]
             "linux" => {
                 return call_so_extension_init(extension);
             }
+            #[cfg(unix)]
             "macos" => {
                 return call_dylib_extension_init(extension)
             }
@@ -172,9 +185,11 @@ pub fn disable_extension_init(extension: Extension) -> Result<(), String> {
             "windows" => {
                 return call_dll_extension_init(extension);
             }
+            #[cfg(unix)]
             "linux" => {
                 return call_so_extension_init(extension);
             }
+            #[cfg(unix)]
             "macos" => {
                 return call_dylib_extension_init(extension)
             }

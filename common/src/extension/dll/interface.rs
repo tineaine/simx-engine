@@ -1,5 +1,8 @@
+use std::path::Path;
 #[cfg(windows)]
 use libloader::libloading::{Library, Symbol};
+use engine_share::entity::extension::Extension;
+use crate::logger::interface::fail;
 
 // 调用插件的初始化函数
 #[cfg(windows)]

@@ -25,6 +25,7 @@ pub fn common_call_method(
                 func(node, flow_data)
             }
         }
+        #[cfg(unix)]
         "linux" => {
             let lib = get_extension_library(path)?.linux.unwrap();
             unsafe {
@@ -32,6 +33,7 @@ pub fn common_call_method(
                 func(node, flow_data)
             }
         }
+        #[cfg(unix)]
         "macos" => {
             let lib = get_extension_library(path)?.mac.unwrap();
             unsafe {
