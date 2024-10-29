@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 use std::sync::Arc;
 
-use crate::core::flow::dispatch::interface::dispatch_flow;
+use crate::core::dispatch::interface::dispatch_flow;
 use engine_common::logger::interface::info;
 use engine_common::runtime::config::get_simx_config;
 use engine_share::entity::exception::dispatch::DispatchErr;

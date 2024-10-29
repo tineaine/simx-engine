@@ -1,13 +1,13 @@
-use crate::core::flow::controller::interface::check_require;
-use crate::core::flow::dispatch::common::redress_stream_dispatch;
-use crate::core::flow::dispatch::dispatch_general::dispatch_general;
-use crate::core::flow::dispatch::dispatch_loop::dispatch_loop;
+use crate::core::controller::interface::check_require;
+use crate::core::dispatch::common::redress_stream_dispatch;
+use crate::core::dispatch::dispatch_general::dispatch_general;
+use crate::core::dispatch::dispatch_loop::dispatch_loop;
 use crate::core::flow::resolver::interface::flow_resolver;
 use engine_common::exception::flow::flow_dispatch_err_handler;
 use engine_common::logger::interface::{debug, fail};
 use engine_common::runtime::flow::{get_flow_runtime, set_flow_runtime};
 use engine_common::runtime::history::{history_persistent, log_history};
-use engine_common::tools::common::{get_current_time, get_uuid};
+use engine_common::tools::common::{get_current_time, get_timestamp, get_uuid};
 use engine_share::entity::common::HistoryLog;
 use engine_share::entity::exception::common::Status;
 use engine_share::entity::exception::dispatch::DispatchErr;
@@ -56,9 +56,9 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
 
     let uuid = get_uuid();
 
+    let start_time = get_timestamp();
     // 创建流运行时
     flow.runtime = Some(FlowRuntimeModel {
-        // status: FlowStatus::Starting,
         current_node: None,
         data: FlowData {
             // 系统数据表
@@ -67,6 +67,8 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
                 flow_name: "".to_string(),
                 route: Default::default(),
                 logs: vec![],
+                start_time: start_time.to_string(),
+                end_time: "".to_string(),
             },
             // 用户变量表
             params: Default::default(),
@@ -95,7 +97,8 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
             }
         }
     }
-    debug(format!("flow {} :[{}] has be exec success.", flow.name, uuid.clone()).as_str());
+    let sec = (get_timestamp().parse::<f64>().unwrap() - runtime.data.basics.start_time.parse::<f64>().unwrap()) / 1_000_000_000.0;
+    debug(format!("flow {} :[{}] completes in {} second", flow.name, uuid.clone(), sec).as_str());
     // 将历史日志进行持久化
     history_persistent(uuid);
     Ok(())

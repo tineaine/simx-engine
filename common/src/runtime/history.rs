@@ -23,15 +23,13 @@ pub fn log_history(flow_id: String, value: HistoryLog) {
         Some(arr) => arr.clone(),
         None => Vec::new(),
     };
-
     arr.push(value);
-
     data.insert(flow_id, arr);
 }
 
 pub fn history_persistent(flow_id: String) {
-    let data = FLOW_HISTORY.lock().unwrap();
-    let history = data.get(flow_id.as_str()).expect("flow_id not found");
+    let mut data = FLOW_HISTORY.lock().unwrap();
+    let history = data.remove(flow_id.as_str()).expect("flow_id not found");
     // 获取日志路径
     let engine_conf = get_simx_config().engine;
     let log_path: &Path = engine_conf.log_path.as_ref();

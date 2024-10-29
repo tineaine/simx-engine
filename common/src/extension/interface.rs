@@ -1,15 +1,21 @@
 use crate::extension::common::common::{common_call_method, get_extension_path};
+#[cfg(windows)]
 use crate::extension::dll::interface::call_dll_extension_init;
+#[cfg(unix)]
 use crate::extension::dylib::interface::call_dylib_extension_init;
 use crate::extension::jar::interface::call_jar_extension_init;
+#[cfg(unix)]
 use crate::extension::so::interface::call_so_extension_init;
-use crate::logger::interface::{info, warn};
+use crate::logger::interface::{fail, info, warn};
 use crate::runtime::extension::{remove_extension_info, remove_extension_library, set_extension_library, ExtensionLibrary};
 use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::extension::Extension;
 use engine_share::entity::flow::flow::FlowData;
 use engine_share::entity::flow::node::Node;
-use libloader::libloading::Library as WinLibrary;
+#[cfg(windows)]
+use libloader::libloading::Library;
+
+#[cfg(unix)]
 use libloading::Library;
 use std::env::consts::OS;
 use std::path::Path;
@@ -20,34 +26,44 @@ pub fn load_extension(extension: Extension) {
     let function_file = extension.path.as_ref().unwrap();
     let os = OS.to_string().to_lowercase();
     match os.as_str() {
+        #[cfg(windows)]
         "windows" => {
             let path = Path::new(&function_file).join(extension.entry_lib + ".dll");
             println!("Load extension {:?}", path);
-            let lib = unsafe { WinLibrary::new(path.clone()) }.expect("Could not load dll");
+            let lib = unsafe { Library::new(path.clone()) }.expect("Could not load dll");
             set_extension_library(path.to_str().unwrap(), ExtensionLibrary {
                 win: Some(Arc::new(lib)),
+                #[cfg(unix)]
                 linux: None,
+                #[cfg(unix)]
                 mac: None,
             });
         }
+        #[cfg(unix)]
         "macos" => {
             let path = Path::new(&function_file).join(extension.entry_lib + ".dylib");
             let lib = unsafe { Library::new(path.clone()) }.expect("Could not load dylib");
             set_extension_library(path.to_str().unwrap(), ExtensionLibrary {
+                #[cfg(windows)]
                 win: None,
                 linux: None,
                 mac: Some(Arc::new(lib)),
             });
         }
         // 默认直接当so加载
-        _ => {
+        #[cfg(unix)]
+        "linux" => {
             let path = Path::new(&function_file).join(extension.entry_lib + ".so");
             let lib = unsafe { Library::new(path.clone()) }.expect("Could not load so");
             set_extension_library(path.to_str().unwrap(), ExtensionLibrary {
+                #[cfg(windows)]
                 win: None,
                 linux: Some(Arc::new(lib)),
                 mac: None,
             });
+        }
+        _ => {
+            fail("Platform not support");
         }
     };
 }
@@ -99,12 +115,15 @@ pub fn call_extension_init(extension: Extension) -> Result<(), String> {
         // 可能调用的与平台有关的库，比如dll、so、或dylib
         // 判断当前操作系统是windows、linux还是macos
         match OS.to_string().to_lowercase().as_str() {
+            #[cfg(windows)]
             "windows" => {
                 return call_dll_extension_init(extension);
             }
+            #[cfg(unix)]
             "linux" => {
                 return call_so_extension_init(extension);
             }
+            #[cfg(unix)]
             "macos" => {
                 return call_dylib_extension_init(extension)
             }
@@ -129,12 +148,15 @@ pub fn enable_extension_service(extension: Extension) -> Result<(), String> {
         // 可能调用的与平台有关的库，比如dll、so、或dylib
         // 判断当前操作系统是windows、linux还是macos
         match OS.to_string().to_lowercase().as_str() {
+            #[cfg(windows)]
             "windows" => {
                 return call_dll_extension_init(extension);
             }
+            #[cfg(unix)]
             "linux" => {
                 return call_so_extension_init(extension);
             }
+            #[cfg(unix)]
             "macos" => {
                 return call_dylib_extension_init(extension)
             }
@@ -159,12 +181,15 @@ pub fn disable_extension_init(extension: Extension) -> Result<(), String> {
         // 可能调用的与平台有关的库，比如dll、so、或dylib
         // 判断当前操作系统是windows、linux还是macos
         match OS.to_string().to_lowercase().as_str() {
+            #[cfg(windows)]
             "windows" => {
                 return call_dll_extension_init(extension);
             }
+            #[cfg(unix)]
             "linux" => {
                 return call_so_extension_init(extension);
             }
+            #[cfg(unix)]
             "macos" => {
                 return call_dylib_extension_init(extension)
             }

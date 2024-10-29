@@ -1,5 +1,5 @@
-use crate::core::flow::dispatch::common::match_node_id;
-use crate::core::flow::dispatch::interface::dispatch_nodes;
+use crate::core::dispatch::common::match_node_id;
+use crate::core::dispatch::interface::dispatch_nodes;
 use engine_common::expr::interface::expr_eval_bool;
 use engine_common::logger::interface::{debug, fail};
 use engine_share::entity::exception::dispatch::DispatchErr;

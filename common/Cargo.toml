@@ -6,8 +6,6 @@ edition = "2021"
 [dependencies]
 # 公共资源
 engine-share = { path = "../share" }
-# 处理颜色字符串
-color-string = "0.1.6"
 # 处理 JSON 数据
 serde_json = "1.0.124"
 # 解析和生成 TOML 格式配置文件
@@ -28,7 +26,13 @@ evalexpr = "11.3.0"
 regex = "1"
 # uuid
 uuid = { version = "1.11.0", features = ["serde", "v4"] }
-# 加载dll
+# 日志工具（性能问题，暂时放弃自定义日志）
+tklog = "0.2.4"
+
+[target.'cfg(windows)'.dependencies]
+# 加载dll，仅在windows平台下生效
 libloader = "0.1.4"
-# 加载 so和dylib
+
+[target.'cfg(unix)'.dependencies]
+# 加载 so和dylib，仅在unix平台下生效（linux、macos）
 libloading = "0.8.5"

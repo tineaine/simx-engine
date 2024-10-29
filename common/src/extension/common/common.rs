@@ -2,7 +2,9 @@ use crate::runtime::extension::get_extension_library;
 use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::flow::flow::FlowData;
 use engine_share::entity::flow::node::Node;
-use libloader::libloading::Symbol as WinSymbol;
+#[cfg(windows)]
+use libloader::libloading::Symbol;
+#[cfg(unix)]
 use libloading::Symbol;
 use std::env::consts::OS;
 use std::path::{Path, PathBuf};
@@ -15,13 +17,15 @@ pub fn common_call_method(
     flow_data: &mut FlowData,
 ) -> Result<(), NodeError> {
     match os {
+        #[cfg(windows)]
         "windows" => {
             let lib = get_extension_library(path)?.win.unwrap();
             unsafe {
-                let func: WinSymbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get(function_name.as_ref()).expect("Could not find function");
+                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get(function_name.as_ref()).expect("Could not find function");
                 func(node, flow_data)
             }
         }
+        #[cfg(unix)]
         "linux" => {
             let lib = get_extension_library(path)?.linux.unwrap();
             unsafe {
@@ -29,6 +33,7 @@ pub fn common_call_method(
                 func(node, flow_data)
             }
         }
+        #[cfg(unix)]
         "macos" => {
             let lib = get_extension_library(path)?.mac.unwrap();
             unsafe {

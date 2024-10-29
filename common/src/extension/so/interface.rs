@@ -1,8 +1,13 @@
+#[cfg(unix)]
 use crate::logger::interface::fail;
+#[cfg(unix)]
 use engine_share::entity::extension::Extension;
+#[cfg(unix)]
 use libloading::{Library, Symbol};
+#[cfg(unix)]
 use std::path::Path;
 
+#[cfg(unix)]
 pub fn call_so_extension_init(extension: Extension) -> Result<(), String> {
     // 取方法所在插件文件名（相对于插件根目录）
     let function_file = extension.path.as_ref().unwrap();
