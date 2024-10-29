@@ -25,11 +25,9 @@
     ],
     "routes": {
       "1": {
-        "name": "打印信息",
+        "name": "发起Http请求",
         "handler": "simx-http.http",
-        "common": {
-          
-        },
+        "common": {},
         "downstream": [
           {
             "expr": "1==1",
@@ -38,8 +36,20 @@
         ],
         "redress_stream": [],
         "attr": {
-          "text": 123,
-          "level": "warn"
+          "address": "192.168.2.17",
+          "port": "192.168.2.17",
+          "header": {},
+          "method": "get",
+          "params": {},
+          "body": "",
+          "protocol": "http",
+          "follow_redirect": true,
+          "max_retry": "3",
+          "retry_interval": "1000",
+          "timeout": "10000",
+          "encoding": "utf-8",
+          "save_as": "json",
+          "var_name": "response"
         }
       },
       "2": {
