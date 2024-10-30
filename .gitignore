@@ -28,5 +28,5 @@
 handler/src/handler/files/.DS_Store
 .DS_Store
 example/engine
-example/ext/simx-http/simx-http.dylib
+example/lib/simx-http/simx-http.dylib
 .run/Run Simx Engine.run.xml

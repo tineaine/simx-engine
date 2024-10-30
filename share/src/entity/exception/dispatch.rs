@@ -2,7 +2,7 @@ use crate::entity::exception::node::NodeError;
 
 #[derive(Debug)]
 pub enum DispatchErr {
-    // 找不到流文件
+    // 找不到蓝图
     FlowNotFound(String),
     // 找不到节点
     NodeNotFound(String),

@@ -151,7 +151,7 @@ pub fn load_flow_by_path(path: &Path) {
         display_name: path.file_name().unwrap().to_str().unwrap().to_string(),
         file_name: path.file_name().unwrap().to_str().unwrap().to_string(),
         file_path: path.to_str().unwrap().to_string(),
-        // 目前仅支持flow格式的流文件
+        // 目前仅支持flow格式的蓝图
         file_type: "flow".to_string(),
         flow: None,
     });

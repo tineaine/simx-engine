@@ -21,7 +21,6 @@ pub async fn handle_core(node: Node, flow_data: &mut FlowData) -> Result<(), Nod
         // 服务控制
         "service" =>
             handle_core_service(node, flow_data).await,
-
         _ => {
             Err(NodeError::HandleNotFound(node.handler))
         }

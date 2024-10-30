@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 use std::sync::Arc;
 
-use crate::core::dispatch::interface::dispatch_flow;
+use crate::core::dispatch::interface::dispatch_bp_file;
 use engine_common::logger::interface::info;
 use engine_common::runtime::config::get_simx_config;
 use engine_share::entity::exception::dispatch::DispatchErr;
@@ -52,5 +52,5 @@ pub async fn exec_flow(path: &Path) -> Result<(), DispatchErr> {
     // 系统不关系流的组织形式，只要能转化为标准流对象即可
     // exec_bp_flow(path).await
     // 调度执行
-    dispatch_flow(path).await
+    dispatch_bp_file(path).await
 }

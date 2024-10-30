@@ -1,7 +1,7 @@
 use crate::core::controller::interface::check_require;
 use crate::core::dispatch::common::redress_stream_dispatch;
-use crate::core::dispatch::dispatch_general::dispatch_general;
-use crate::core::dispatch::dispatch_loop::dispatch_loop;
+use crate::core::dispatch::general::dispatch_general;
+use crate::core::dispatch::r#loop::dispatch_loop;
 use crate::core::flow::resolver::interface::flow_resolver;
 use engine_common::exception::flow::flow_dispatch_err_handler;
 use engine_common::logger::interface::{debug, fail};
@@ -17,11 +17,10 @@ use engine_share::entity::flow::flow::{Flow, FlowData, FlowRuntimeModel, SystemF
 use engine_share::entity::flow::node::{Node, NodeTag};
 use std::path::Path;
 
-// 流调度执行器
-// 此方法会根据流文件的path，生成Flow运行时并调度执行
-pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
+// 通过蓝图文件进行调度
+pub async fn dispatch_bp_file(path: &Path) -> Result<(), DispatchErr> {
     // 流对象
-    let mut flow: Flow;
+    let flow: Flow;
 
     // 在缓存中搜索路径是否存在，如果存在就不再走文件系统
     // TODO：这个判断并不稳定，有可能flow会发生改变，因此需要缓存文件修改日期进行比较，这个是后续的功能
@@ -31,9 +30,9 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
             flow = f;
         }
         None => {
-            // 尝试解析流文件
+            // 尝试解析蓝图
             if path.exists() && path.is_file() {
-                // 加载流文件并解析为Flow对象
+                // 加载蓝图并解析为Flow对象
                 flow = flow_resolver(path);
                 // 将当前流加入到缓存
                 set_flow_runtime(path.to_str().unwrap(), flow.clone());
@@ -43,9 +42,22 @@ pub async fn dispatch_flow(path: &Path) -> Result<(), DispatchErr> {
             }
         }
     }
+    dispatch_flow(flow).await
+}
 
 
-    // 检查流文件的环境要求
+// 通过Json进行调度(Json化的Flow对象）
+pub async fn dispatch_json_str(json: String) -> Result<(), DispatchErr> {
+    // 流对象
+    let flow: Flow = serde_json::from_str(&json).expect("cannot parse json to flow object.");
+    dispatch_flow(flow).await
+}
+
+// 流调度执行器
+// 此方法会根据蓝图的path，生成Flow运行时并调度执行
+pub async fn dispatch_flow(mut flow: Flow) -> Result<(), DispatchErr> {
+
+    // 检查蓝图的环境要求
     match check_require(flow.clone().requirements) {
         Ok(_) => {}
         Err(e) => {

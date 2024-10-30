@@ -5,11 +5,11 @@ use std::io::Read;
 use std::path::Path;
 
 pub fn resolver_flow(path: &Path) -> Flow {
-    // 尝试读取流文件
+    // 尝试读取蓝图
     let mut file = File::open(path).unwrap();
     let mut flow_str = String::new();
     file.read_to_string(&mut flow_str).unwrap();
-    // 尝试解析流文件为统一流程对象
+    // 尝试解析蓝图为统一流程对象
     let ret = serde_json::from_str(&flow_str);
     if ret.is_err() {
         fail("Cannot resolver flow file, please check your flow file.");
