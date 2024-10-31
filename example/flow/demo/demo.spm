@@ -1,0 +1,11 @@
+// 项目配置
+{
+  name: 'demo',
+  version: '1.0.0',
+  update: '2024-11-01 00:00:00',
+  author: 'zhaoswen',
+  // 服务配置
+  service: [
+
+  ]
+}
