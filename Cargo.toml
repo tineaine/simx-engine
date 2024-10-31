@@ -3,7 +3,7 @@ resolver = "2"
 
 members = [
     # 共用部分，simx项目中的插件均引用此模块
-    "common",
+    "core",
     # 核心扩展插件，包含大量的引擎节点handle
     "handler",
     # 引擎主体

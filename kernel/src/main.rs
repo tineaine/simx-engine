@@ -1,11 +1,17 @@
-use crate::core::engine::kernel::{run, serve};
+use engine::kernel::{run, serve};
 use engine_common::logger::interface::info;
 use engine_common::runtime::config::get_simx_config;
 use std::env;
 use std::fs;
 use std::path::Path;
 
-mod core;
+pub mod controller;
+pub mod dispatch;
+pub mod engine;
+pub mod flow;
+pub mod script;
+mod workspace;
+
 #[tokio::main]
 async fn main() {
 
@@ -18,14 +24,14 @@ async fn main() {
     if args.len() > 1 {
         // 解析输入参数
         match args[1].as_str() {
-            "serve" => serve().await,
+            "serve" => serve().await.unwrap(),
             "run" => run().await,
             _ => run().await,
         }
         return;
     } else {
         // 同步运行监听
-        serve().await;
+        serve().await.unwrap();
     }
     // 程序运行结束后的清理动作
     // 注意，用户手动结束进程不会触发此方法

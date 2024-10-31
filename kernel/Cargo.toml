@@ -6,7 +6,7 @@ build = "build.rs"
 
 [dependencies]
 # 公共模块
-engine-common = { path = "../common" }
+engine-common = { path = "../core" }
 # 公共资源
 engine-share = { path = "../share" }
 # 核心handle
