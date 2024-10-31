@@ -5,3 +5,4 @@ mod dylib;
 mod jar;
 mod py;
 mod so;
+mod lib;

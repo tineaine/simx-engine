@@ -1,4 +1,6 @@
+#[cfg(windows)]
 extern crate winres;
+#[cfg(windows)]
 fn main() {
     // 仅windows下有效
     if cfg!(target_os = "windows") {
@@ -23,3 +25,5 @@ fn main() {
         res.compile().expect("Failed to compile resources");
     }
 }
+#[cfg(unix)]
+fn main() {}

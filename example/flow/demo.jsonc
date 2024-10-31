@@ -1,7 +1,18 @@
+// 设计器蓝图（bpx）
 {
+  // 版本
   "version": "1",
+  // 名称
   "name": "测试流",
+  // 描述
+  "description": "测试流",
+  // 更新日期
   "update_date": "2024-10-18",
+  // 创建日期
+  "create_date": "2024-09-27",
+  // 作者
+  "developer": "Noah Jones",
+  // 依赖
   "requirements": [
     {
       "name": "engine",
@@ -14,17 +25,47 @@
       "version": "1.8.0"
     }
   ],
+  // 蓝图主体
   "blueprint": {
+    // 开始节点并行
     "parallel_endpoints": false,
+    // 路由并行
     "parallel_routes": false,
+    // 最大循环次数
     "maximum_repetition": 30,
+    // 开始节点列表
     "endpoints": [
       "1"
     ],
+    // 批注
+    "comments": [
+      {
+        "point-x": 0,
+        "point-y": 0,
+        "point-z": 0,
+        "text": "hello world in comment",
+        "size": 14,
+        "color": "#000000"
+      }
+    ],
+    // 路由配置
     "routes": {
       "1": {
         "name": "发起Http请求",
-        "handler": "simx-http.http.get",
+        "design": {
+          // 空间定位点，支持-65535 到 65535 之间的距离
+          "point-x": 0,
+          "point-y": 0,
+          "point-z": 0,
+          "width": 100,
+          "height": 40,
+          "radius": 15,
+          "color": "#ff0000",
+          "shape": "circle",
+          "border": "solid",
+          "border-color": "#000000"
+        },
+        "handler": "simx-http.http",
         "common": {},
         "downstream": [
           {
