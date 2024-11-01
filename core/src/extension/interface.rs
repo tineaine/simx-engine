@@ -7,7 +7,7 @@ use crate::extension::jar::interface::call_jar_extension_init;
 #[cfg(unix)]
 use crate::extension::so::interface::call_so_extension_init;
 use crate::logger::interface::{fail, info, warn};
-use crate::runtime::extension::{remove_extension_info, remove_extension_library, set_extension_library, ExtensionLibrary};
+use crate::runtime::extension::{get_extension_info, remove_extension_info, remove_extension_library, set_extension_library, ExtensionLibrary};
 use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::extension::Extension;
 use engine_share::entity::flow::flow::FlowData;
@@ -15,6 +15,9 @@ use engine_share::entity::flow::node::Node;
 #[cfg(windows)]
 use libloader::libloading::Library;
 
+use crate::extension::dylib::interface::call_dylib_extension_service;
+use crate::extension::so::interface::call_so_extension_service;
+use engine_share::entity::services::Service;
 #[cfg(unix)]
 use libloading::Library;
 use std::env::consts::OS;
@@ -135,40 +138,39 @@ pub fn call_extension_init(extension: Extension) -> Result<(), String> {
 }
 
 // 开启扩展中的某个服务
-pub fn enable_extension_service(extension: Extension) -> Result<(), String> {
-    info(format!("Try to call extension {} init", extension.name).as_str());
+pub fn enable_extension_service(service: Service) -> Result<(), String> {
+    let extension: Vec<_> = service.extension_key.split(".").collect();
+    let extension_name = extension[0];
+    println!("---> {:?}", extension_name);
+    let extension: Extension = get_extension_info(extension_name).expect("Extension not found");
+    println!("---> {:?}", extension);
+    info(format!("Try to call extension {} service", extension.name).as_str());
     let ext = extension.clone();
     ext.path.expect("Extension path is none");
-    let file_name = ext.entry_lib;
-    if file_name.ends_with(".jar") {
-        return call_jar_extension_init(extension);
-    } else if file_name.ends_with(".py") {
-        warn("Not support py file yet");
-    } else {
-        // 可能调用的与平台有关的库，比如dll、so、或dylib
-        // 判断当前操作系统是windows、linux还是macos
-        match OS.to_string().to_lowercase().as_str() {
+    // 可能调用的与平台有关的库，比如dll、so、或dylib
+    // 判断当前操作系统是windows、linux还是macos
+    let job = tokio::spawn(async move {
+        Ok(match OS.to_string().to_lowercase().as_str() {
             #[cfg(windows)]
             "windows" => {
                 return call_dll_extension_init(extension);
             }
             #[cfg(unix)]
             "linux" => {
-                return call_so_extension_init(extension);
+                return call_so_extension_service(extension, service);
             }
             #[cfg(unix)]
             "macos" => {
-                return call_dylib_extension_init(extension)
+                return call_dylib_extension_service(extension, service)
             }
             _ => {}
-        }
-    }
-    warn(format!("Function not found in extension {}", extension.name).as_str());
+        })
+    });
     Ok(())
 }
 
 // 禁用服务中的某个服务
-pub fn disable_extension_init(extension: Extension) -> Result<(), String> {
+pub fn disable_extension_service(extension: Extension) -> Result<(), String> {
     info(format!("Try to call extension {} init", extension.name).as_str());
     let ext = extension.clone();
     ext.path.expect("Extension path is none");

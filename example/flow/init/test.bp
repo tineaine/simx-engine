@@ -34,10 +34,15 @@
         ],
         "redress_stream": [],
         "attr": {
-          "url": "http://58.58.161.70:10096/auth/user/user-info",
-          "header": {},
+          "url": "http://111.35.7.36:10013/auth/user/user-info",
+          "header": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "zcToken": "fDDESBdmNMktMh7sibVCHvzdRux6URdj"
+          },
           "params": {},
           "data": {},
+          "encoding": "utf-8",
           "max_retry": "3",
           "retry_interval": "1000",
           "timeout": "10000",

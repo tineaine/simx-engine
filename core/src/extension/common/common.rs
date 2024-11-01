@@ -21,7 +21,7 @@ pub fn common_call_method(
         "windows" => {
             let lib = get_extension_library(path)?.win.unwrap();
             unsafe {
-                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get(function_name.as_ref()).expect("Could not find function");
+                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get("func".as_ref()).expect("Could not find function");
                 func(node, flow_data)
             }
         }
@@ -29,7 +29,7 @@ pub fn common_call_method(
         "linux" => {
             let lib = get_extension_library(path)?.linux.unwrap();
             unsafe {
-                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get(function_name.as_ref()).expect("Could not find function");
+                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get("func".as_ref()).expect("Could not find function");
                 func(node, flow_data)
             }
         }
@@ -37,7 +37,7 @@ pub fn common_call_method(
         "macos" => {
             let lib = get_extension_library(path)?.mac.unwrap();
             unsafe {
-                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get(function_name.as_ref()).expect("Could not find function");
+                let func: Symbol<unsafe extern "C" fn(Node, &mut FlowData) -> Result<(), NodeError>> = lib.get("func".as_ref()).expect("Could not find function");
                 func(node, flow_data)
             }
         }

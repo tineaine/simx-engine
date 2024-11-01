@@ -1,6 +1,6 @@
 [package]
 name = "engine"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 build = "build.rs"
 
@@ -15,6 +15,8 @@ engine-handler = { path = "../handler" }
 tokio = { version = "1.39.2", features = ["full"] }
 # 用于处理 JSON 数据
 serde_json = "1.0.124"
+# 处理 JSON5 数据
+serde_json5 = "0.1.0"
 # 用于处理异步任务
 futures = "0.3.30"
 
