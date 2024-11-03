@@ -22,9 +22,6 @@ futures = "0.3.30"
 
 # 仅x86_64平台下加载
 [target.'cfg(target_arch = "x86_64")'.dependencies]
-# 采用 mimalloc 进行内存管理，可以大幅优化多线程下的运行速度
-# arm64 架构暂不支持（aarch64-apple等）
-mimalloc-sys = "0.1.6"
 
 # 仅ARM64平台下加载（如新版本的mac）
 [target.'cfg(target_arch = "aarch64")'.dependencies]

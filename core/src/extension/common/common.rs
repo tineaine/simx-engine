@@ -12,7 +12,6 @@ use std::path::{Path, PathBuf};
 pub fn common_call_method(
     path: &str,
     os: &str,
-    function_name: &str,
     node: Node,
     flow_data: &mut FlowData,
 ) -> Result<(), NodeError> {
@@ -62,4 +61,8 @@ pub fn get_extension_path(path: String, entry_lib: String) -> PathBuf {
             Path::new(&path).join(entry_lib + ".so")
         }
     }
+}
+
+pub fn call_service_comm(){
+    
 }

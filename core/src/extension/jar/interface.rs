@@ -1,3 +1,4 @@
+use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::extension::Extension;
 // use std::path::Path;
 // 
@@ -11,6 +12,6 @@ use engine_share::entity::extension::Extension;
 //     flow_data.clone()
 // }
 #[allow(unused_variables)]
-pub fn call_jar_extension_init(extension: Extension) -> Result<(), String> {
+pub fn call_jar_extension_init(extension: Extension) -> Result<(), NodeError> {
     Ok(())
 }

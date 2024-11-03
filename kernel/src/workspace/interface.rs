@@ -8,7 +8,7 @@ use std::fs;
 use std::path::PathBuf;
 
 // 加载workspace到内存
-pub fn init_workspace() {
+pub async fn init_workspace() {
     // 系统引擎配置
     let engine_conf = get_simx_config().engine;
     let workspace_path = engine_conf.workspace_path;
@@ -25,13 +25,13 @@ pub fn init_workspace() {
         if path.is_dir() {
             // 作为项目加载到内存中
             // TODO：改为多进程方式
-            load_workspace(path)
+            load_workspace(path).await
         }
     }
 }
 
 // 调起workspace
-pub fn load_workspace(path: PathBuf) {
+pub async fn load_workspace(path: PathBuf) {
     // TODO: 检查命名空间是否已经存在
     // 读取workspace的配置文件
     let workspace_conf_str = fs::read_to_string(path.join("workspace.ws")).expect("Cannot read workspace config file");
@@ -53,11 +53,11 @@ pub fn load_workspace(path: PathBuf) {
     // 加载服务
     for service in workspace_conf.global_service {
         // 加载服务
-        load_service(service)
+        load_service(service).await
     }
     // 加载项目
     for project in workspace_conf.module {
-        load_project(path.join(project))
+        load_project(path.join(project)).await
     }
     // 加载项目初始化脚本和流
     info(format!("Load workspace: {} successful", path.display()).as_str())

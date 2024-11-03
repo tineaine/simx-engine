@@ -2,6 +2,7 @@
 use crate::logger::interface::fail;
 #[cfg(unix)]
 use engine_share::entity::extension::Extension;
+#[cfg(unix)]
 use engine_share::entity::services::Service;
 #[cfg(unix)]
 use libloading::{Library, Symbol};
@@ -37,7 +38,7 @@ pub fn call_dylib_extension_service(extension: Extension, service: Service) -> R
     let lib = unsafe { Library::new(dylib_path) }.expect("Could not load dylib");
 
     unsafe {
-        let serve: Symbol<unsafe extern "C" fn(service: Service) -> bool> = lib.get("serve".as_bytes()).expect("Could not find serve function");
+        let serve: Symbol<unsafe extern "C" fn(service: Service) -> Result<(), NodeError>> = lib.get("serve".as_bytes()).expect("Could not find serve function");
         // 调用函数
         if !serve(service) {
             fail(format!("Call lib {} serve failed ", extension.name).as_str())

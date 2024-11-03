@@ -1,7 +1,7 @@
-use serde_derive::Deserialize;
+use serde_derive::{Deserialize, Serialize};
 use serde_json::Value;
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Service {
     // 服务唯一标识，初始化与调用时需要使用
     pub service_key: String,

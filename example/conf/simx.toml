@@ -1,6 +1,6 @@
 [engine]
 #run_init_script = true
-run_init_flow = false
+run_init_flow = true
 # 运行插件的初始化方法，一般不建议关闭
 run_init_extensions_func = true
 # 允许插件加载配置文件

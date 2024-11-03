@@ -34,11 +34,11 @@
         ],
         "redress_stream": [],
         "attr": {
-          "url": "http://111.35.7.36:10013/auth/user/user-info",
+          "url": "http://110.41.46.51:38004/process/task/count",
           "header": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "zcToken": "fDDESBdmNMktMh7sibVCHvzdRux6URdj"
+            "zcToken": "UAEsasaeVdjiDsgGVHNi1KYJbzd1z8sg"
           },
           "params": {},
           "data": {},
@@ -46,7 +46,6 @@
           "max_retry": "3",
           "retry_interval": "1000",
           "timeout": "10000",
-          "encoding": "utf-8",
           "save_as": "json",
           "var_name": "response"
         }

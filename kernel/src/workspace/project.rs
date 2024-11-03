@@ -5,7 +5,7 @@ use engine_share::entity::workspace::Project;
 use std::fs;
 use std::path::PathBuf;
 
-pub fn load_project(path: PathBuf) {
+pub async fn load_project(path: PathBuf) {
     // TODO: 检查项目是否已经存在
     // 读取project的配置文件
     let project_conf_str = fs::read_to_string(path.join("project.ws")).expect("Cannot read project config file");
@@ -27,7 +27,7 @@ pub fn load_project(path: PathBuf) {
     // 加载服务
     for service in project_conf.service {
         // 加载服务
-        load_service(service)
+        load_service(service).await
     }
     // 加载蓝图
     for blueprint in project_conf.blueprint {
