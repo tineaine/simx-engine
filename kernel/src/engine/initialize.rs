@@ -29,7 +29,7 @@ pub async fn engine_init() -> Result<(), String> {
         }
     }
 
-    // 尝试扫描并加载流，默认全部
+    // 加载本地基础数据，包括蓝图、脚本、扩展
     if reload_local("").is_err() {
         fail("Cannot scan and load local resource")
     }

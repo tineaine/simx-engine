@@ -1,12 +1,5 @@
-use crate::extension::common::common::{common_call_method, get_extension_path};
-#[cfg(windows)]
-use crate::extension::dll::interface::call_dll_extension_init;
-#[cfg(unix)]
-use crate::extension::dylib::interface::call_dylib_extension_init;
-use crate::extension::jar::interface::call_jar_extension_init;
-#[cfg(unix)]
-use crate::extension::so::interface::call_so_extension_init;
-use crate::logger::interface::{fail, info, warn};
+use crate::extension::common::common::{call, get_extension_path};
+use crate::logger::interface::{fail, info};
 use crate::runtime::extension::{get_extension_info, remove_extension_info, remove_extension_library, set_extension_library, ExtensionLibrary};
 use engine_share::entity::exception::node::NodeError;
 use engine_share::entity::extension::Extension;
@@ -16,16 +9,12 @@ use engine_share::entity::flow::node::Node;
 use libloader::libloading::Library;
 
 #[cfg(unix)]
-use crate::extension::dylib::interface::call_dylib_extension_service;
-#[cfg(unix)]
-use crate::extension::so::interface::call_so_extension_service;
 use engine_share::entity::services::Service;
 #[cfg(unix)]
 use libloading::Library;
 use std::env::consts::OS;
 use std::path::Path;
 use std::sync::Arc;
-use crate::extension::dll::interface::call_dll_extension_service;
 
 // 加载扩展
 pub fn load_extension(extension: Extension) {
@@ -85,13 +74,15 @@ pub fn unload_extension(extension: Extension) {
 // 调用rust编写的扩展（直接是结构体）
 pub fn invoke_extension_func_common(extension: Extension, node: Node, flow_data: &mut FlowData) -> Result<(), NodeError> {
     // 取方法所在插件文件名（相对于插件根目录）
-    let lib_path = get_extension_path(extension.path.unwrap(), extension.entry_lib);
-    common_call_method(
-        lib_path.to_str().unwrap(),
-        OS.to_string().to_lowercase().as_str(),
-        node,
-        flow_data,
-    )
+    match OS.to_string().to_lowercase().as_str() {
+        #[cfg(windows)]
+        "windows" => call("func", "dll", extension, None, Some(node), Some(flow_data)),
+        #[cfg(unix)]
+        "linux" => call("func", "so", extension, None, Some(node), Some(flow_data)),
+        #[cfg(unix)]
+        "macos" => call("func", "dylib", extension, None, Some(node), Some(flow_data)),
+        _ => panic!("Not support this platform"),
+    }
 }
 
 // 调用非rust编写的扩展（通过二进制或Json字符串）
@@ -107,7 +98,7 @@ pub fn invoke_extension_func_restful() {}
 pub fn invoke_extension_func_socket() {}
 
 // 调用扩展的init
-pub fn call_extension_init(extension: Extension) -> Result<(), String> {
+pub fn call_extension_init(extension: Extension) -> Result<(), NodeError> {
     info(format!("Try to call extension {} init", extension.name).as_str());
     let ext = extension.clone();
     ext.path.expect("Extension path is none");
@@ -116,29 +107,27 @@ pub fn call_extension_init(extension: Extension) -> Result<(), String> {
     match OS.to_string().to_lowercase().as_str() {
         #[cfg(windows)]
         "windows" => {
-            return call_dll_extension_init(extension);
+            return call("init", "dll", extension, None, None, None)
         }
         #[cfg(unix)]
         "linux" => {
-            return call_so_extension_init(extension);
+            return call("init", "so", extension, None, None, None)
         }
         #[cfg(unix)]
         "macos" => {
-            return call_dylib_extension_init(extension)
+            return call("init", "dylib", extension, None, None, None)
         }
         _ => {}
     }
-
     Ok(())
 }
 
 // 开启扩展中的某个服务
+// 服务必须开启后才能通过处理器调用
 pub async fn enable_extension_service(service: Service) -> Result<(), NodeError> {
     let extension: Vec<_> = service.extension_key.split(".").collect();
     let extension_name = extension[0];
-    println!("---> {:?}", extension_name);
     let extension: Extension = get_extension_info(extension_name).expect("Extension not found");
-    println!("---> {:?}", extension);
     info(format!("Try to call extension {} service", extension.name).as_str());
     let ext = extension.clone();
     ext.path.expect("Extension path is none");
@@ -148,53 +137,20 @@ pub async fn enable_extension_service(service: Service) -> Result<(), NodeError>
         Ok(match OS.to_string().to_lowercase().as_str() {
             #[cfg(windows)]
             "windows" => {
-                return call_dll_extension_service(extension, service);
+                return call("serve", "dll", extension, Some(service), None, None)
             }
             #[cfg(unix)]
             "linux" => {
-                return call_so_extension_service(extension, service);
+                return call("serve", "so", extension, Some(service), None, None)
             }
             #[cfg(unix)]
             "macos" => {
-                return call_dylib_extension_service(extension, service)
+                return call("serve", "dylib", extension, Some(service), None, None)
             }
             _ => {}
         })
     });
     job.await.unwrap()?;
+    // 将服务加入到服务列表中
     Ok(())
 }
-
-// 禁用服务中的某个服务
-pub fn disable_extension_service(extension: Extension,service: Service) -> Result<(), NodeError> {
-    info(format!("Try to call extension {} init", extension.name).as_str());
-    let ext = extension.clone();
-    ext.path.expect("Extension path is none");
-    let file_name = ext.entry_lib;
-    if file_name.ends_with(".jar") {
-        return call_jar_extension_init(extension);
-    } else if file_name.ends_with(".py") {
-        warn("Not support py file yet");
-    } else {
-        // 可能调用的与平台有关的库，比如dll、so、或dylib
-        // 判断当前操作系统是windows、linux还是macos
-        match OS.to_string().to_lowercase().as_str() {
-            #[cfg(windows)]
-            "windows" => {
-                return call_dll_extension_service(extension, service);
-            }
-            #[cfg(unix)]
-            "linux" => {
-                return call_so_extension_service(extension, service);
-            }
-            #[cfg(unix)]
-            "macos" => {
-                return call_dylib_extension_service(extension, service)
-            }
-            _ => {}
-        }
-    }
-    warn(format!("Function not found in extension {}", extension.name).as_str());
-    Ok(())
-}
-
