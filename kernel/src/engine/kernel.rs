@@ -1,7 +1,7 @@
 use crate::engine::initialize::engine_init;
 use crate::engine::thread::init_thread_monitor;
 use crate::flow::interface::exec_flow;
-use engine_common::extension::interface::call_extension_init;
+use engine_common::extension::core::call_init;
 use engine_common::logger::interface::{fail, info};
 use engine_common::runtime::config::get_simx_config;
 use engine_common::runtime::extension::get_all_extension_info;
@@ -48,7 +48,7 @@ pub async fn serve() -> Result<(), EngineErr> {
         // 调用插件的init方法
         // 注意，新线程中执行init，init的执行结果的顺序不能保证
         let job = tokio::spawn(async move {
-            call_extension_init(extension).unwrap();
+            call_init(extension).unwrap();
         });
         jobs.push(job);
     }

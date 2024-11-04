@@ -1,8 +1,4 @@
-pub mod interface;
-pub mod common;
-mod dll;
-mod dylib;
-mod jar;
-mod py;
-mod so;
-mod service;
+pub mod core;
+pub mod agent;
+pub mod service;
+pub mod exec;

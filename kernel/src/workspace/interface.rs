@@ -21,11 +21,12 @@ pub async fn init_workspace() {
         // 获取文件路径
         let path = entry.unwrap().path();
         // 仅对文件夹进行加载
-        // 后续加载的其实是 pro 包（zip）
+        // 后续加载的其实是 swp,simx workspace package 包（zip）
         if path.is_dir() {
-            // 作为项目加载到内存中
-            // TODO：改为多进程方式
-            load_workspace(path).await
+            // 在新的线程中初始化工作空间
+            tokio::spawn(async move {
+                load_workspace(path).await
+            });
         }
     }
 }

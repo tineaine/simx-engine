@@ -1,9 +1,8 @@
-use crate::extension::interface::enable_extension_service;
+use crate::extension::service::interface::call_server;
 use engine_share::entity::services::Service;
 
 pub async fn load_service(service: Service) {
-    println!("load service {:?}", service);
-    enable_extension_service(service).await.expect("cannot load service");
+    call_server(service).await.expect("cannot load service");
 }
 
 pub fn unload_service(service: Service) {
