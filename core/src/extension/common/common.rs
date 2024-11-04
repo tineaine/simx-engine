@@ -6,7 +6,10 @@ use engine_share::entity::flow::node::Node;
 use engine_share::entity::services::Service;
 #[cfg(windows)]
 use libloader::libloading::Symbol;
+#[cfg(unix)]
 use libloading::Library;
+#[cfg(windows)]
+use libloader::libloading::Library;
 #[cfg(unix)]
 use libloading::Symbol;
 use std::env::consts::OS;
@@ -32,7 +35,6 @@ pub fn get_extension_path(path: String, entry_lib: String) -> PathBuf {
     }
 }
 
-#[cfg(unix)]
 pub fn call(func: &str, lib_type: &str, extension: Extension, service: Option<Service>, node: Option<Node>, flow_data: Option<&mut FlowData>) -> Result<(), NodeError> {
     // 取方法所在插件文件名（相对于插件根目录）
     let function_file = extension.path.as_ref().unwrap();
