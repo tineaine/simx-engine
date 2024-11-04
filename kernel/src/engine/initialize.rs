@@ -50,7 +50,7 @@ pub async fn engine_init() -> Result<(), String> {
 
     // 加载工作空间（项目集）
     info("Workspace initialization...");
-    init_workspace();
+    init_workspace().await;
 
     Ok(())
 }

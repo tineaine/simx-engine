@@ -28,6 +28,7 @@ regex = "1"
 uuid = { version = "1.11.0", features = ["serde", "v4"] }
 # 日志工具（性能问题，暂时放弃自定义日志）
 tklog = "0.2.4"
+tokio = "1.41.0"
 
 [target.'cfg(windows)'.dependencies]
 # 加载dll，仅在windows平台下生效

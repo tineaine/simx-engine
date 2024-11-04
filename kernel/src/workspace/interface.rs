@@ -1,12 +1,14 @@
+use crate::workspace::project::load_project;
 use engine_common::environment::interface::check;
-use engine_common::logger::interface::fail;
+use engine_common::logger::interface::{fail, info};
 use engine_common::runtime::config::get_simx_config;
-use engine_share::entity::flow::flow::Environment;
+use engine_common::services::interface::load_service;
+use engine_share::entity::workspace::Workspace;
 use std::fs;
 use std::path::PathBuf;
 
 // 加载workspace到内存
-pub fn init_workspace() {
+pub async fn init_workspace() {
     // 系统引擎配置
     let engine_conf = get_simx_config().engine;
     let workspace_path = engine_conf.workspace_path;
@@ -18,27 +20,45 @@ pub fn init_workspace() {
     for entry in entries {
         // 获取文件路径
         let path = entry.unwrap().path();
-        println!("{:?}", path);
         // 仅对文件夹进行加载
+        // 后续加载的其实是 pro 包（zip）
         if path.is_dir() {
             // 作为项目加载到内存中
             // TODO：改为多进程方式
-            load_workspace(path)
+            load_workspace(path).await
         }
     }
 }
 
 // 调起workspace
-pub fn load_workspace(path: PathBuf) {
-    // 加载项目环境需求并判断是否满足需求
-    let requirements: Vec<Environment> = vec![];
-    match check(requirements) {
-        Ok(_) => {}
-        Err(e) => {
-            fail(format!("Cannot load workspace, request env not match: {}", e).as_str());
+pub async fn load_workspace(path: PathBuf) {
+    // TODO: 检查命名空间是否已经存在
+    // 读取workspace的配置文件
+    let workspace_conf_str = fs::read_to_string(path.join("workspace.ws")).expect("Cannot read workspace config file");
+    let workspace_conf: Workspace = serde_json5::from_str(&workspace_conf_str).expect("Cannot parse workspace config file");
+    // 初始化工作空间配置
+    info("Load workspace config file successful");
+    // 初始化工作空间变量
+    info("Load workspace variable successful");
+    // 检查环境需求
+    match check(workspace_conf.global_requirement) {
+        Ok(_) => {
+            info("Workspace environment check successful");
+        }
+        Err(err) => {
+            fail(format!("Workspace environment check failed: {}", err).as_str());
+            return;
         }
     }
-    // 加载项目服务
+    // 加载服务
+    for service in workspace_conf.global_service {
+        // 加载服务
+        load_service(service).await
+    }
+    // 加载项目
+    for project in workspace_conf.module {
+        load_project(path.join(project)).await
+    }
     // 加载项目初始化脚本和流
-    println!("Load workspace: {}", path.display())
+    info(format!("Load workspace: {} successful", path.display()).as_str())
 }

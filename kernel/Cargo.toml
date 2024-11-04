@@ -1,6 +1,6 @@
 [package]
 name = "engine"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 build = "build.rs"
 
@@ -15,14 +15,13 @@ engine-handler = { path = "../handler" }
 tokio = { version = "1.39.2", features = ["full"] }
 # 用于处理 JSON 数据
 serde_json = "1.0.124"
+# 处理 JSON5 数据
+serde_json5 = "0.1.0"
 # 用于处理异步任务
 futures = "0.3.30"
 
 # 仅x86_64平台下加载
 [target.'cfg(target_arch = "x86_64")'.dependencies]
-# 采用 mimalloc 进行内存管理，可以大幅优化多线程下的运行速度
-# arm64 架构暂不支持（aarch64-apple等）
-mimalloc-sys = "0.1.6"
 
 # 仅ARM64平台下加载（如新版本的mac）
 [target.'cfg(target_arch = "aarch64")'.dependencies]

@@ -8,8 +8,8 @@
   "libs": [],
   "init": "init",
   "destroy": "destroy",
-  "handle_func": "handle_func",
-  "handle_service": "handle_service",
+  "handle_func": "func",
+  "handle_service": "serve",
   "service": {
     "entry": "",
     "init": ""

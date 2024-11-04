@@ -40,8 +40,6 @@ async fn main() {
 
 // 初始化方法
 fn init() {
-    #[cfg(target_arch = "x86_64")]
-    mimalloc_init();
     // 检查日志文件夹
     let engine_conf = get_simx_config().engine;
     // 检查运行目录下是否有日志目录
@@ -55,28 +53,4 @@ fn init() {
 // 这个是为了后续的内存池清理工作的准备
 fn clean() {
     info("Simx engine run complete.");
-}
-
-// 针对于 x86_64 平台，使用 mimalloc 进行内存管理，可以大幅优化多线程内存效率
-#[cfg(target_arch = "x86_64")]
-fn mimalloc_init() {
-    extern crate mimalloc_sys;
-
-    use std::alloc::{GlobalAlloc, Layout};
-    use std::ptr::null_mut;
-
-    struct Mimalloc;
-
-    unsafe impl GlobalAlloc for Mimalloc {
-        unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-            mimalloc_sys::mi_malloc(layout.size()) as *mut u8
-        }
-
-        unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
-            mimalloc_sys::mi_free(ptr as *mut std::ffi::c_void);
-        }
-    }
-
-    #[global_allocator]
-    static GLOBAL: Mimalloc = Mimalloc;
 }
