@@ -7,4 +7,3 @@ pub mod exception;
 pub mod extension;
 pub mod environment;
 pub mod services;
-pub mod agent;

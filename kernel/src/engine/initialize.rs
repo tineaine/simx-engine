@@ -2,7 +2,7 @@ use crate::flow::interface::load_and_exec_default_flow;
 use crate::script::interface::load_and_exec_default_script;
 use crate::workspace::interface::init_workspace;
 use engine_common::environment::check::env_check;
-use engine_common::extension::interface::load_extension;
+use engine_common::extension::core::load_extension;
 use engine_common::logger::interface::{fail, info, success, warn};
 use engine_common::runtime::config::get_simx_config;
 use engine_common::runtime::extension::set_extension_info;

@@ -65,11 +65,24 @@
       "5": {
         "name": "打印信息1",
         "handler": "simx.core.debug.print",
+        "downstream": [
+          "6"
+        ],
+        "redress_stream": [],
+        "attr": {
+          "text": "hello world in println ${aaa}",
+          "level": "warn"
+        }
+      },
+      "6": {
+        "name": "代理访问",
+        "handler": "simx.core.agent.request",
         "downstream": [],
         "redress_stream": [],
         "attr": {
-          "text": "hello world in println 5",
-          "level": "warn"
+          "agent_id": "hello world in println ${aaa}",
+          "conf": {
+          }
         }
       }
     }

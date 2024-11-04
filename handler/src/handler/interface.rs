@@ -2,7 +2,7 @@ use crate::handler::core::interface::handle_core;
 use crate::handler::files::interface::handle_file;
 use crate::handler::os::interface::handle_os;
 use crate::handler::script::interface::handle_script;
-use engine_common::extension::interface::invoke_extension_func_common;
+use engine_common::extension::exec::interface::call_exec;
 use engine_common::logger::interface::{info, warn};
 use engine_common::runtime::extension::get_extension_info;
 use engine_common::thread::engine::reload_local;
@@ -54,7 +54,7 @@ pub async fn root_handler(node: Node, flow_data: &mut FlowData) -> Result<(), No
             Err(NodeError::ExtNotFound(handler_path[0].to_string()))
         } else {
             // 调用方法
-            invoke_extension_func_common(extension.unwrap(), node, flow_data)
+            call_exec(extension.unwrap(), node, flow_data)
         }
     }
 }
