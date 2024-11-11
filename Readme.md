@@ -6,7 +6,7 @@
 >
 > 最后更新：2024年10月19日
 >
-> Mail: Hello@tineaine.cn
+> Mail: hello@tineaine.cn / tsos201@outlook.com
 >
 > **使用 MIT 开源协议**
 
